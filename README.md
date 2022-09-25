@@ -1,6 +1,6 @@
-- 👋 Hi, Ich bin der Mephisto
-- 👀 Ich intressiere mich für programmieren
-- 🌱 Ich programmiere aktuell einen Discord-Bot mit JavaScript
+- 👋 Hi, I am Mephisto
+- 👀 I love to program and dedicate most of my time to it
+- 🌱 I currently work on a discord bot in JavaScript
 
 <!---
 Mephisto5558/Mephisto5558 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
