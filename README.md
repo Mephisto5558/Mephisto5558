@@ -1,3 +1,5 @@
+[![wakatime](https://wakatime.com/badge/user/f9d04252-581b-43cf-8bc2-31351c68d2e6.svg)](https://wakatime.com/@f9d04252-581b-43cf-8bc2-31351c68d2e6)
+
 - 👋 Hi, I am Mephisto
 - 👀 I love to program and dedicate most of my time to it
 - 🌱 I currently work on a discord bot in JavaScript
