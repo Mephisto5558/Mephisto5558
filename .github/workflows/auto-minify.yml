@@ -37,7 +37,7 @@ jobs:
       HAS_GPG_KEY: ${{ secrets.GPG_PRIVATE_KEY != '' }}
     steps:
       - name: check out the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Import GPG key
         if: env.HAS_GPG_KEY == 'true'
