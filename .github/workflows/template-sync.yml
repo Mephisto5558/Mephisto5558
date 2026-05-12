@@ -1,0 +1,114 @@
+name: "Reuseable Template Sync"
+
+on:
+  workflow_call:
+    inputs:
+      mappings:
+        required: true
+        type: "string"
+        description: "Space-separated list of source:target (e.g.,
+          gitignore/js.gitignore:.gitignore)"
+      commit_msg_template:
+        required: false
+        type: "string"
+        default: "sync `{dest}` from `{src}`"
+        description: "A template for the commit message. replaces {src} and {dest}."
+    secrets:
+      APP_PRIVATE_KEY:
+        required: false
+        description: "Private key of app 3692187."
+
+jobs:
+  sync:
+    runs-on: "ubuntu-latest"
+    env:
+      BASE_REPO: "Mephisto5558/Mephisto5558"
+      BASE_BRANCH: "main"
+
+      APP_ID: 3692187
+      APP_NAME: "mephisto5558-template-sync"
+
+      MAPPINGS: "${{ inputs.mappings }}"
+      COMMIT_MSG_TEMPLATE: "${{ inputs.commit_msg_template }}"
+      START_MARKER: "# === CUSTOM START ==="
+      END_MARKER: "# === CUSTOM END ==="
+
+    steps:
+      - name: "Generate Token"
+        id: "generate_token"
+        uses: "actions/create-github-app-token@v3"
+        with:
+          client-id: "${{ env.APP_ID }}"
+          private-key: "${{ secrets.APP_PRIVATE_KEY }}"
+
+      - uses: "actions/checkout@v6"
+        with:
+          fetch-depth: 0
+          token: "${{ steps.generate_token.outputs.token }}"
+          persist-credentials: false
+
+      - name: "Fetch and sync"
+        id: "sync"
+        run: |
+          BASE_URL="https://raw.githubusercontent.com/$BASE_REPO/$BASE_BRANCH/templates"
+          CHANGELOG=""
+
+          while read -r pair; do
+            [ -z "$pair" ] && continue
+
+            RAW_SRC="${pair%%:*}"
+            RAW_DEST="${pair#*:}"
+            SRC=$(echo "$RAW_SRC" | xargs)
+            DEST=$(echo "$RAW_DEST" | xargs)
+
+            echo "Processign $SRC -> $DEST"
+            mkdir -p "$(dirname "$DEST")"
+
+            if ! curl -sSf "$BASE_URL/$SRC" -o "$DEST.tmp"; then
+              echo "Error: Could not fetch $SRC"
+              exit 1
+            fi
+
+            if [ -f "$DEST" ] && grep -q "$START_MARKER" "$DEST" && grep -q "$END_MARKER" "$DEST"; then
+              echo "Preserving custom block in $DEST"
+              sed -n "/$START_MARKER/,/$END_MARKER/p" "$DEST" > custom_block.txt
+              sed -i "/$START_MARKER/,/$END_MARKER/ {
+                /$START_MARKER/ r custom_block.txt
+                d
+              }" "$DEST.tmp"
+            fi
+
+            mv "$DEST.tmp" "$DEST"
+          
+            git add -N "$DEST" # Making sure git knows about the file
+
+            if ! git diff --quiet "$DEST"; then
+              echo "Changes detected for $DEST"
+              MSG=$(echo "$COMMIT_MSG_TEMPLATE" | sed "s|{src}|$SRC|g; s|{dest}|$DEST|g")
+              CHANGELOG="${CHANGELOG}- ${MSG}"$'\n'
+            fi
+          done <<< "$MAPPINGS"
+
+          {
+            echo "CHANGELOG<<EOF"
+            echo "$CHANGELOG"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: "Create Pull Request"
+        uses: "peter-evans/create-pull-request@v8"
+        with:
+          title: "Sync templates from Upstream"
+          commit-message: "sync templates from ${{ env.BASE_REPO }}"
+          body: |
+            Sync templates from the [base repo](https://github.com/${{ env.BASE_REPO }}/tree/${{ env.BASE_BRANCH }}/templates).
+
+            ## Changelog
+            ${{ env.CHANGELOG }}
+
+          base: "${{ env.BASE_BRANCH }}"
+          branch: "sync-templates"
+          delete-branch: true
+
+          token: ${{ steps.generate_token.outputs.token }}
+          sign-commits: true
