@@ -1,0 +1,21 @@
+# Automatically synced by `template-sync` workflow.
+
+name: "ESLint"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  schedule:
+    - cron: "0 0 * * 1"
+
+permissions:
+  contents: "read"
+  security-events: "write"
+  actions: "read"
+
+jobs:
+  call-eslint-workflow:
+    uses: "Mephisto5558/Mephisto5558/.github/workflows/eslint.yml@main"
