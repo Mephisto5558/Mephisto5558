@@ -8,6 +8,8 @@
   rebase = false
 [commit]
   gpgsign = true
+[tag]
+  gpgsign = true
 [credential]
   helper = manager
 [init]
@@ -22,3 +24,8 @@
   prune = true
 [rerere]
   enabled = true
+[gui]
+  encoding = utf-8
+[i18n]
+  commitencoding = utf-8
+  logoutputencoding = utf-8
