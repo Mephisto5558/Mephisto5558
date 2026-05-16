@@ -8,7 +8,7 @@ function Global:Reload-Shell {
   . $GLOBAL:profile
 }
 
-# $env:SFW_SILENT = "true"
+$env:SFW_SILENT = "true"
 function Global:Invoke-SafeNPM {
   sfw npq-hero @args
 }
