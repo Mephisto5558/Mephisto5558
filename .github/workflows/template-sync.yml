@@ -78,14 +78,14 @@ jobs:
 
               if [ -n "$START_LINE" ] && [ -n "$END_LINE" ]; then
                 echo "Preserving custom block in $DEST"
-                sed -n ",$START_LINE,$END_LINE,p" "$DEST" > custom_block.txt
+                sed -n "\,${START_LINE},\,${END_LINE},p" "$DEST" > custom_block.txt
               
                 TMP_START=$(grep "$START_MARKER" "$DEST.tmp" | head -n 1)
                 TMP_END=$(grep "$END_MARKER" "$DEST.tmp" | head -n 1)
                 
                 if [ -n "$TMP_START" ] && [ -n "$TMP_END" ]; then
-                  sed -i ",$TMP_START,$TMP_END, {
-                      ,$TMP_START, r custom_block.txt
+                  sed -i "\,${TMP_START},\,${TMP_END}, {
+                      \,${TMP_START}, r custom_block.txt
                       d
                     }" "$DEST.tmp"
                 fi
