@@ -1,5 +1,6 @@
 [core]
   editor = code --wait
+  ignorecase = false
 [user]
   name = Mephisto5558
   email = 87113906+Mephisto5558@users.noreply.github.com
