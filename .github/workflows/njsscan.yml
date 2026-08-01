@@ -16,7 +16,7 @@ jobs:
         uses: "actions/checkout@v7"
 
       - name: "Set up Python"
-        uses: "actions/setup-python@v6"
+        uses: "actions/setup-python@v7"
         with:
           python-version: "3.12"
 
@@ -27,7 +27,7 @@ jobs:
           args: ". --sarif --output njsscan-results.sarif || true"
 
       - name: "Upload analysis results to GitHub"
-        uses: "github/codeql-action/upload-sarif@v4.36.2"
+        uses: "github/codeql-action/upload-sarif@v4.37.3"
         with:
           sarif_file: "njsscan-results.sarif"
           wait-for-processing: true

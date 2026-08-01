@@ -65,7 +65,7 @@ jobs:
 
       - name: "Commit and push signed changes"
         if: ${{ steps.import-gpg.outcome == 'success' }}
-        uses: "stefanzweifel/git-auto-commit-action@v7.1.0"
+        uses: "stefanzweifel/git-auto-commit-action@v7.2.0"
         with:
           commit_message: "Workflow: Minify CSS and JS"
           commit_user_name: ${{ steps.import-gpg.outputs.name }}
@@ -73,6 +73,6 @@ jobs:
 
       - name: "Commit and push unsigned changes"
         if: ${{ steps.import-gpg.outcome != 'success' }}
-        uses: "stefanzweifel/git-auto-commit-action@v7.1.0"
+        uses: "stefanzweifel/git-auto-commit-action@v7.2.0"
         with:
           commit_message: "Workflow: Minify CSS and JS"
