@@ -1,7 +1,8 @@
 [core]
-  editor = code --wait
+  editor = codium --wait
   ignorecase = false
 [user]
+  useConfigOnly = true
   name = Mephisto5558
   email = 87113906+Mephisto5558@users.noreply.github.com
   signingkey = 3349DF55FA885542
@@ -13,6 +14,7 @@
   gpgsign = true
 [credential]
   helper = manager
+  gitlabAuthModes = token
 [init]
   defaultBranch = main
 [rebase]
@@ -25,8 +27,19 @@
   prune = true
 [rerere]
   enabled = true
+[diff]
+  algorithm = histogram
+  compactionHeuristic = true
+  renames = true
+  colorMoved = default
+  colorMovedWS = allow-indentation-change
 [gui]
   encoding = utf-8
 [i18n]
   commitencoding = utf-8
   logoutputencoding = utf-8
+[alias]
+  swap = !git reset --hard HEAD~2 && git cherry-pick ORIG_HEAD ORIG_HEAD~1
+  tempdiff = "!sh -c 'git diff --cached > diff.diff && \\codium --wait diff.diff; rm -f diff.diff'"
+  slog = log --abbrev-commit
+  tinydiff = "!sh -c 'git diff \"$@\" --minimal -w -b -U0 -I \"^[[:space:]]*import \"' _"
